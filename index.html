@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="media/logo-icon.png">
+  <title>CACA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/stylesheet.css">
+  <script type="text/javascript" src="js/events.js" defer></script>
+  <script type="text/javascript" src="js/barchart.js" defer></script>
+  <script type="module" src="js/form.js" defer></script>
+  <script type="text/javascript" src="js/animation3js.js" defer></script>
+  <script type="text/javascript" src="js/textToggle.js" defer></script>
+
+  <script src="https://d3js.org/d3.v7.min.js" ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.145.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.145.0/examples/js/loaders/GLTFLoader.js"></script>
+
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <img src="media/logo.png" alt="logo">
+      </div>
+      
+      <input type="checkbox" id="menu-toggle" class="menu-toggle">
+      
+      <label for="menu-toggle" class="hamburger">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+      </label>
+      
+      <nav class="navbar">
+        <a href="#apresentacao">Apresentação</a>
+        <a href="#investigacao">Investigação</a>
+        <a href="#parceiros">Parceiros</a>
+        <a href="#oportunidades">Oportunidades</a>
+        <a href="#contactos">Contactos</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="apresentacao" class="apresentacao" tabindex="0">
+        <div class="banner">
+          <div class="slideshow">
+            <div class="slides">
+              <img src="media/universidade_pdl.png" alt="Imagem Universidade São Miguel">
+              <img src="media/universidade_faial.jpg" alt="Imagem Universidade Faial">
+              <img src="media/universidade_terceira.png" alt="Imagem Universidade Terceira">
+            </div>
+
+            <button class="btn prev" onclick="mudar(-1)">&#8592;</button>
+            <button class="btn next" onclick="mudar(1)">&#8594;</button>
+
+            <div class="bolinhas">
+              <span class="bolinha active" onclick="irPara(0)"></span>
+              <span class="bolinha" onclick="irPara(1)"></span>
+              <span class="bolinha" onclick="irPara(2)"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="texto">
+          <p>
+            O <strong>Centro Académico Clínico dos Açores (CACA)</strong> é uma unidade de cooperação
+            entre instituições de ensino superior, unidades de saúde e centros de investigação.
+          </p>
+
+          <p>
+            O objetivo é que a investigação científica seja aprofundada para que se conheça
+            a realidade regional e os problemas diversos ao nível da saúde, como também
+            para apoiar a decisão política na área da saúde, contribuindo para a capacitação
+            da área clínica.
+          </p>
+        </div>
+      </section>
+
+      <hr class="linebreak">
+
+      <section id="investigacao" class="investigacao" tabindex="0">
+        
+        <h1>Áreas de Investigação</h1>
+        <div class="grid-investigacao" >
+          <div class="grid-box-investigacao" onclick="textSwap(this)">
+
+            <div class="conteudo-box">
+            <h3 class="text-title">Epidemiologia</h3>
+            <p>A epidemiologia é a ciência que estuda a distribuição, determinantes e prevenção de doenças em populações, 
+              sendo essencial para a tomada de decisões em saúde pública. Nos Açores, a doença Machado-Joseph é estudada epidemiologicamente, 
+              permitindo compreender sua prevalência, risco e impacto na comunidade. 
+              <a href="https://www.google.com/" target="_blank">Saiba mais</a></p>
+            <p><strong>Professor Responsável: </strong>Maria Silva</p>
+            </div>
+
+            <div class="stat-box" >
+            <p><strong>Projetos Ativos:</strong> 32</p>
+            <p><strong>Investigadores:</strong> 9</p>
+            <p><strong>Workshops realizadas:</strong> 68</p>
+            </div>
+          </div>
+
+          <div class="grid-box-investigacao" onclick="textSwap(this)">
+            <div class="conteudo-box">
+            <h3 class="text-title">Telemedicina</h3>
+            <p>A telemedicina representa a prestação de cuidados de saúde à distância, sendo potenciada por plataformas que garantem a integridade dos dados, 
+              protocolos automáticos para a triagem eficiente e acesso rápido a histórico clínico. Nos Açores, a telemedicina pode permitir encaminhamentos rápidos 
+              entre ilhas, gerindo os diferentes recursos e incluindo a 
+              transferência segura de informações clínicas.
+              <a href="https://www.google.com/" target="_blank">Saiba mais</a></p>
+            <p><strong>Professor Responsável: </strong>Ana Campos</p>
+            </div>
+
+            <div class="stat-box">
+            <p><strong>Projetos Ativos:</strong> 18</p>
+            <p><strong>Investigadores:</strong> 12</p>
+            <p><strong>Workshops realizadas:</strong> 43</p>
+            </div>
+          </div>
+
+          <div class="grid-box-investigacao" onclick="textSwap(this)">
+            <div class="conteudo-box">
+            <h3 class="text-title">Saúde Mental</h3>
+            <p>A saúde mental refere-se ao bem-estar emocional, psicológico e social de uma pessoa, influenciando como pensa, sente e age no dia a dia, 
+              bem como a capacidade de lidar com o stress, relacionar-se e tomar decisões. Sendo os Açores a região do país com maior taxa de obesidade e suicídios, 
+              a promoção estruturada do exercício físico pode contribuir 
+              simultaneamente para a saúde física e mental.
+               <a href="https://www.google.com/" target="_blank">Saiba mais</a></p>
+            <p><strong>Professor Responsável: </strong>José Rocha</p>
+          </div>
+
+          <div class="stat-box">
+          <p><strong>Projetos Ativos:</strong> 22</p>
+          <p><strong>Investigadores:</strong> 5</p>
+          <p><strong>Workshops realizadas:</strong> 32</p>
+          </div>
+        </div>
+      </section>
+
+      <hr class="linebreak">
+
+      <section id="parceiros" class="parceiros" tabindex="0">
+        <h1>Conheça os nossos parceiros e o nosso impacto </h1>
+        <p>Instituições de ensino, investigação e saúde que colaboram no âmbito do Centro Académico Clínico dos Açores:</p>
+        <div class="grid-parceiros">
+          <div class="grid-box">
+            <a href="https://uac.pt/" target="_blank"><img src="media/uac.png" alt="UAC"></a>
+          </div>
+          <div class="grid-box">
+            <a href="https://www.hdes.pt/" target="_blank"><img src="media/hdes.png" alt="HDES"></a>
+          </div>
+          <div class="grid-box">
+            <a href="https://usism.azores.gov.pt/wp/" target="_blank"><img src="media/usism.png" alt="USISM"></a>
+          </div>
+          <div class="grid-box">
+            <a href="https://www.inovacores.pt/" target="_blank"><img src="media/inova.png" alt="INOVA"></a>
+          </div>
+        </div>
+
+      <section id="grafico" class="grafico" tabindex="0">
+        <h3>O nosso sucesso, em perspectiva</h3>
+        <div class="grid-grafico">
+          <div class="grid-box">
+          </div>
+        </div>
+      </section>
+      
+    </section>
+
+
+
+      <hr class="linebreak">
+
+      <section id="oportunidades" class="oportunidades" tabindex="0">
+        <h1>Oportunidades</h1>
+        <div class="oportunidades-container">
+          <div class="oportunidades-img">
+            <img src="media/oportunidades.jpg" alt="oportunidades">
+          </div>
+
+          <div class="oportunidades-content">
+            
+            <p>Recrutamentos em curso no Centro Académico Clínico dos Açores:</p>
+
+        <div id="sidepopup" class="sidepop">
+            <a href="#contacto-form" onclick="hidePopup();userDismiss()"><div id="container-3d" style="width: 100%;height: 120px;">
+    </div><strong>Interessado?</strong><p>Entre em contacto para saber mais sobre as nossas ofertas formativas!</p></a>
+        </div>
+        <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Vaga</th>
+                  <th>Modalidade</th>
+                  <th>Enquadramento</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Estágio</td>
+                  <td>Voluntariado</td>
+                  <td>Iniciação científica em utilização de bases de dados para triagem e diagnóstico médico. FCT/UAc. <a href="https://www.google.com/" target="_blank">Ver mais</a></td>
+                </tr>
+                <tr>
+                  <td>Bolsa de Doutoramento</td>
+                  <td>Bolseiro</td>
+                  <td>Investigação sobre as variações genéticas da Doença de Machado-Joseph nos Açores. FCT/UAc e HDES. <a href="https://www.google.com/" target="_blank">Ver mais</a></td>
+                </tr>
+                <tr>
+                  <td>Técnico Superior</td>
+                  <td>Contrato com termo certo</td>
+                  <td>Técnico para projeto de investigação sobre o efeito da atividade física na saúde mental. FCSH e UISM. <a href="https://www.google.com/" target="_blank">Ver mais</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <hr class="linebreak">
+
+      <section id="contactos" class="contactos" tabindex="0">
+        <h1>Contactos</h1>
+        <div class="contactos-container">
+          <div class="contacto-mapa">
+            <iframe src="https://www.google.com/maps?q=Universidade+dos+Açores+Ponta+Delgada&output=embed">
+            </iframe>
+          </div>
+          <div class="contacto-info">
+            <h4>Morada:</h4>
+            <p>Centro Académico Clínico dos Açores</p>
+            <p>Universidade dos Açores</p>
+            <p>Campus Universitário de Ponta Delgada</p>
+            <p>9500-018 Ponta Delgada</p>
+            <p>Ilha de São Miguel - Açores - Portugal</p>
+            <br>  
+            <h4>Telefone:</h4>
+            <p>(+351) 296 650 000</p>
+            <br>  
+            <h4>Email:</h4>
+            <a href="mailto:caca@uac.pt">caca@uac.pt</a>
+          </div>
+          <div class="contacto-form">
+            <h4>Contate-nos:</h4>
+            <form id = "contacto-form">
+              <input id = "name" placeholder="Nome*">
+              <input id = "email" placeholder="Email*">
+              <div class="telefone">
+                <select id="phone-code">
+                  <option value="+351">🇵🇹 +351</option>
+                  <option value="+34">🇪🇸 +34</option>
+                  <option value="+44">🇬🇧 +44</option>
+                  <option value="+55">🇧🇷 +55</option>
+                  <option value="+1">🇺🇸 +1</option>
+                  <option value="+33">🇫🇷 +33</option>
+                  <option value="+49">🇩🇪 +49</option>
+                  <option value="+39">🇮🇹 +39</option>
+                  <option value="+81">🇯🇵 +81</option>
+                  <option value="+61">🇦🇺 +61</option>
+                </select>
+                <input id="phone-number" type="tel" placeholder="Telefone (opcional)">
+              </div>
+              <select id="subject" onchange="fillMessage()">
+                <option value="">Assunto*</option>
+                <option value="Informações sobre oportunidades">Informações sobre oportunidades</option>
+                <option value="Candidatura a bolsa de investigação">Candidatura a bolsa de investigação</option>
+                <option value="Parceria institucional">Parceria institucional</option>
+                <option value="Pedido de informação geral">Pedido de informação geral</option>
+                <option value="outro">Outro assunto...</option>
+              </select>
+              <input id="subject-custom" placeholder="Especifique o assunto*" style="display:none;">
+              <textarea id = "message" placeholder="Mensagem*"></textarea>
+              <button type="submit" onclick="checkForm();">Enviar</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer_copyright">
+        <p>CACA © 2026</p>
+      </div>
+
+      <div class="footer_socialmedia">
+        <a href="https://facebook.com" target="_blank"><img src="media/fb.png" alt="Facebook"></a>
+        <a href="https://instagram.com" target="_blank"><img src="media/ig.png" alt="Instagram"> </a>
+        <a href="https://linkedin.com" target="_blank"><img src="media/linkedIn.png" alt="LinkedIn"></a>
+      </div>
+
+      <div class="footer_course">
+        <a href="https://www.uac.pt/" target="_blank"><p>Universidade dos Açores</p></a>
+        <p>Tecnologias Web - 2025/2026</p>
+      </div>
+      <div class="footer_privacy">
+        <a href="https://www.google.com/" target="_blank"><p>Politica de Privacidade</p></a>
+      </div>
+    </footer>
+  </div>
+
+  <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+  
+</body>
+</html>
