@@ -80,4 +80,15 @@ export class Formulario {
       this.isPhoneValid()
     )
   }
+
+  get databaseInputObject() {
+    /*
+    Devolve o nome, email e telemóvel atual da instância, a efeitos de declarar esta informação para indexedDB
+    */
+    return {
+      name: this.name,
+      email: this.email,
+      phone: this.phone,
+    };
+}
 }

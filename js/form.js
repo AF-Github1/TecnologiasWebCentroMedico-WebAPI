@@ -41,21 +41,21 @@ export function fillMessage () {
 
 
 
-export function checkForm () {
+export function checkForm (event) {
   /*
 
   Esta função informa o utilizador sobre o sucesso ou a falha na submissão do formulário, usando a classe Formulario e os métodos associados para validar a validade da informação
   inserida pelo utilizador.
+  Caso validada, a informação relevante do formulário é depois passada para a base de dados através de handleTransaction
 
   */
   const formInformation = new Formulario(document.getElementById('name').value, document.getElementById('email').value,
                                         document.getElementById('subject').value, document.getElementById('subject-custom').value,
                                         document.getElementById('message').value, document.getElementById('phone-number').value)
-
+  event.preventDefault()
   if (formInformation.isValid()) {
     alert(`${formInformation.name}, o seu formulário foi enviado com sucesso`)
-    handleTransaction("ContactUser", [document.getElementById('name').value, document.getElementById('email').value,
-                                      document.getElementById('phone-number').value])
+    handleTransaction("ContactUser", formInformation.dataForDB);
 
   } else if (!formInformation.isPhoneValid()) {
     alert('Número de telefone inválido. Insira apenas dígitos (6 a 15 números).')
@@ -73,7 +73,7 @@ const formElement = document.getElementById('contacto-form')
 
 subjectSelect.addEventListener('change', fillMessage)
 formElement.addEventListener('submit', (event) => {
-    checkForm()
+    checkForm(event);
   })
 
 })
