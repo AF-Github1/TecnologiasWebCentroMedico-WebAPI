@@ -58,7 +58,7 @@ export class Formulario {
   isPhoneValid() {
     /*
     Utiliza-se regex para verificar se o telefone contém apenas dígitos e entre 6 a 15 caracteres
-    Sendo o numero de telefone opcional, a falta complete de um número de telefone é considerada válida  
+    Sendo o numero de telefone opcional, a falta completa de um número de telefone é considerada válida  
     */
     if (this.phoneNumber !== '') {
     const cleanNumber = this.phoneNumber.replace(/[\s\-().]/g, '')
