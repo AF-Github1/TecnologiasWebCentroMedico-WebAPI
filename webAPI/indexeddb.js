@@ -26,15 +26,25 @@ request.onerror = function (event) {
 };
 
 
-function informUser(htmlElement) {//!!Reserved in order to send return values to user to a specific html element
+function informUser(event, userInfo) {//!!Reserved in order to send return values to user to a specific html element
                                   // probably on screen notification (similar to actual form, without interruption) 
+  //!! userInfo poderá não conseguir ser imprimido, formatar texto
+  event.preventDefault()
+  //!! Utilizar a função de getFromDatabase a nível de verificar (não listar)
+
+  userCheck = false
+  if (!userCheck) {
+  alert(`Já existe um utilizador com estas credenciais`)
+  } else if ({}) {
+  alert(`O utilizador ${userInfo} foi eliminado`)
+  }
+  
 
 }
 
 export function handleTransaction(typeOfUser, valueObj) { 
   /*
   Cria a tabela na base de dados de acordo com o nome providenciado e insere a linha com os valores inseridos como parâmetros
-  of the user that submitted the form
 
   * @param {typeOfUser} string - Contém o nome da nova tabela a criar na base de dados, caso ainda não tenha sido criada
     de forma a criar o efeito animado
