@@ -1,5 +1,5 @@
 import { Formulario } from './formClass.js'
-import {handleTransaction } from 'webAPI./indexeddb.js'
+import {handleTransaction } from '/webAPI/indexeddb.js'
 
 export function fillMessage () {
  
@@ -55,8 +55,7 @@ export function checkForm () {
   if (formInformation.isValid()) {
     alert(`${formInformation.name}, o seu formulário foi enviado com sucesso`)
     handleTransaction("ContactUser", [document.getElementById('name').value, document.getElementById('email').value,
-                                   document.getElementById('subject').value, document.getElementById('subject-custom').value,
-                                   document.getElementById('message').value, document.getElementById('phone-number').value])
+                                      document.getElementById('phone-number').value])
 
   } else if (!formInformation.isPhoneValid()) {
     alert('Número de telefone inválido. Insira apenas dígitos (6 a 15 números).')

@@ -57,13 +57,13 @@ export function handleTransaction(typeOfUser, sourceList) { // Reserved for gett
   
 } // Call example addUser(1, "John Doe", "john.doe@example.com");
  
-function setToDatabase() { // Reserved to getting information from database
+function getFromDatabase(typeOfUser) { // Reserved to getting information from database
     const request = indexedDB.open(dbName, dbVersion);
 
   request.onsuccess = function (event) {
     const db = event.target.result;
-    const transaction = db.transaction("users", "readonly");
-    const objectStore = transaction.objectStore("users");
+    const transaction = db.transaction(typeOfUser, "readonly");
+    const objectStore = transaction.objectStore(typeOfUser);
 
     const getRequest = objectStore.get(id);
 
