@@ -1,28 +1,43 @@
 // Example reference https://github.com/mdn/dom-examples/blob/main/indexeddb-api/main.js
 
-const dbName = "formDatabase";
-const dbVersion = 2;
+const dbName = 'formDatabase';
+const dbVersion = 3;
 
 const request = indexedDB.open(dbName, dbVersion);
 
 request.onupgradeneeded = function (event) {
   const db = event.target.result;
-
+  let objectStore
   // Create an object store named 'users' with 'id' as the keyPath
-  if (!db.objectStoreNames.contains("ContactUser")) {
-    db.createObjectStore("ContactUser", { keyPath: "id", autoIncrement: true });
-    console.log('DatabaseStore "ContactUser" created')
+  if (!db.objectStoreNames.contains('ContactUser')) { //!! Needs to be replaced with a for loop in order to handle multiple tables 
+    objectStore = db.createObjectStore('ContactUser', { keyPath: 'id', autoIncrement: true });
+    console.log('DatabaseStore "ContactUser"  created')
+  } else {
+    objectStore = event.target.transaction.objectStore('ContactUser');
+    console.log('DatabaseStore "ContactUser" already exists')
   }
-  console.log("Database setup complete");
+
+  if (!objectStore.indexNames.contains('email')) {
+    objectStore.createIndex('email', 'email', { unique: true });
+  }
+  if (!objectStore.indexNames.contains('name')) {
+    objectStore.createIndex('name', 'name', { unique: false });
+  }
+  if (!objectStore.indexNames.contains('phone')) {
+    objectStore.createIndex('phone', 'phone', { unique: true });
+  }
+
+
+  console.log('Database setup complete');
 };
 
 request.onsuccess = function (event) {
   const db = event.target.result;
-  console.log("Database opened successfully");
+  console.log('Database opened successfully');
 };
 
 request.onerror = function (event) {
-  console.error("Error opening database:", event.target.errorCode);
+  console.error('Error opening database:', event.target.errorCode);
 };
 
 
@@ -55,42 +70,42 @@ export function handleTransaction(typeOfUser, valueObj) {
 
   request.onsuccess = function (event) {
     const db = event.target.result;
-    const transaction = db.transaction(typeOfUser, "readwrite");
+    const transaction = db.transaction(typeOfUser, 'readwrite');
     const objectStore = transaction.objectStore(typeOfUser);
     const addRequest = objectStore.add(valueObj);
 
     addRequest.onsuccess = function () {
-      console.log("User added:", typeOfUser);
+      console.log('User added:', typeOfUser);
     };
 
     addRequest.onerror = function (event) {
-      console.error("Error adding user:", event.target.errorCode);
+      console.error('Error adding user:', event.target.errorCode);
     };
   };
   
 }
  
-function getFromDatabase(typeOfUser) { // Reserved to getting information from database
-    const request = indexedDB.open(dbName, dbVersion);
+export function existsInIndex(storeName, indexName, value) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
+  const request = indexedDB.open(dbName, dbVersion);
 
-  request.onsuccess = function (event) {
+  request.onsuccess = (event) => {
     const db = event.target.result;
-    const transaction = db.transaction(typeOfUser, "readonly");
-    const objectStore = transaction.objectStore(typeOfUser);
+    const transaction = db.transaction('ContactUser', 'readonly');
+    const objectStore = transaction.objectStore('ContactUser');
+    const index = objectStore.index(indexName);
 
-    const getRequest = objectStore.get(id);
+    const results = [];
+    const range = IDBKeyRange.bound(searchString, searchString + '\uffff');
+    const cursorRequest = index.openCursor(range);
 
-    getRequest.onsuccess = function () {
-      if (getRequest.result) {
-        console.log("User found:", getRequest.result); //!! Needs to be set as output in site itself
+    cursorRequest.onsuccess = (event) => {
+      const cursor = event.target.result;
+      if (cursor) {
+        results.push(cursor.value);
+        cursor.continue();
       } else {
-        console.log("User not found"); 
+        callback(results);
       }
-    };
-
-    getRequest.onerror = function (event) {
-      console.error("Error retrieving user:", event.target.errorCode);
-
     };
   };
 }
