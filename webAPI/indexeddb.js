@@ -11,8 +11,9 @@ request.onupgradeneeded = function (event) {
   const db = event.target.result;
 
   // Create an object store named 'users' with 'id' as the keyPath
-  if (!db.objectStoreNames.contains("users")) {
-    db.createObjectStore("Utilizador", { keyPath: "id" });
+  if (!db.objectStoreNames.contains("ContactUser")) {
+    db.createObjectStore("ContactUser", { keyPath: "id" });
+    console.log('Store ContactUser created')
   }
   console.log("Database setup complete");
 };
@@ -37,7 +38,7 @@ export function handleTransaction(typeOfUser, sourceList) { // Reserved for gett
   Creates a table named typeOfUser, values in the table being sourced from sourceList
   
   */
-  const request = indexedDB.open(dbName, dbVersion);
+  const request = indexedDB.open("formDatabase", 1); //!! Not being recognized with dbName, dbVersion
 
   request.onsuccess = function (event) {
     const db = event.target.result;
@@ -47,7 +48,7 @@ export function handleTransaction(typeOfUser, sourceList) { // Reserved for gett
     sourceList.forEach((element) => objectStore.add(element)); // Iterate through each element and add to database
 
     addRequest.onsuccess = function () {
-      console.log("User added:", user);
+      console.log("User added:", typeOfUser);
     };
 
     addRequest.onerror = function (event) {
