@@ -49,13 +49,15 @@ export function checkForm (event) {
   Caso validada, a informação relevante do formulário é depois passada para a base de dados através de handleTransaction
 
   */
+  event.preventDefault()
+
   const formInformation = new Formulario(document.getElementById('name').value, document.getElementById('email').value,
                                         document.getElementById('subject').value, document.getElementById('subject-custom').value,
                                         document.getElementById('message').value, document.getElementById('phone-number').value)
-  event.preventDefault()
+  
   if (formInformation.isValid()) {
     alert(`${formInformation.name}, o seu formulário foi enviado com sucesso`)
-    handleTransaction("ContactUser", formInformation.dataForDB);
+    handleTransaction("ContactUser", formInformation.databaseInputObject);
 
   } else if (!formInformation.isPhoneValid()) {
     alert('Número de telefone inválido. Insira apenas dígitos (6 a 15 números).')
@@ -73,7 +75,7 @@ const formElement = document.getElementById('contacto-form')
 
 subjectSelect.addEventListener('change', fillMessage)
 formElement.addEventListener('submit', (event) => {
-    checkForm(event);
+    checkForm(event)
   })
 
 })

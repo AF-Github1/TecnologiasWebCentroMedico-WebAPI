@@ -1,9 +1,7 @@
 // Example reference https://github.com/mdn/dom-examples/blob/main/indexeddb-api/main.js
 
-
-//!! Need to check if this autoruns
 const dbName = "formDatabase";
-const dbVersion = 1;
+const dbVersion = 2;
 
 const request = indexedDB.open(dbName, dbVersion);
 
@@ -33,10 +31,15 @@ function informUser(htmlElement) {//!!Reserved in order to send return values to
 
 }
 
-export function handleTransaction(typeOfUser, sourceList) { // Reserved for getting information from form
+export function handleTransaction(typeOfUser, valueObj) { 
   /*
-  Creates a table named typeOfUser, values in the table being sourced from sourceList
-  
+  Cria a tabela na base de dados de acordo com o nome providenciado e insere a linha com os valores inseridos como parâmetros
+  of the user that submitted the form
+
+  * @param {typeOfUser} string - Contém o nome da nova tabela a criar na base de dados, caso ainda não tenha sido criada
+    de forma a criar o efeito animado
+  * @param {valueObj} Object - Objecto que contém o nome, email e número de telefone do utilizador, para serem adicionados como atributos na tabela
+
   */
   const request = indexedDB.open(dbName, dbVersion);
 
@@ -44,8 +47,7 @@ export function handleTransaction(typeOfUser, sourceList) { // Reserved for gett
     const db = event.target.result;
     const transaction = db.transaction(typeOfUser, "readwrite");
     const objectStore = transaction.objectStore(typeOfUser);
-
-    const addRequest = objectStore.add(userData);
+    const addRequest = objectStore.add(valueObj);
 
     addRequest.onsuccess = function () {
       console.log("User added:", typeOfUser);
@@ -56,7 +58,7 @@ export function handleTransaction(typeOfUser, sourceList) { // Reserved for gett
     };
   };
   
-} // Call example addUser(1, "John Doe", "john.doe@example.com");
+}
  
 function getFromDatabase(typeOfUser) { // Reserved to getting information from database
     const request = indexedDB.open(dbName, dbVersion);
@@ -78,8 +80,7 @@ function getFromDatabase(typeOfUser) { // Reserved to getting information from d
 
     getRequest.onerror = function (event) {
       console.error("Error retrieving user:", event.target.errorCode);
-      //!! Error log can show on inspect, but here, needs to also send message about being impossible
-      // to complete operation to client on site (as in database get, not in failure to find user)
+
     };
   };
 }

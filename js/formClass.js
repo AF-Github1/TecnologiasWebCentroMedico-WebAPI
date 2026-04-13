@@ -1,6 +1,6 @@
 export class Formulario {
   /*
-   Esta classe representa o formulário de contacto e contém métodos para a validação dos dados inseridos no formulário
+   Esta classe representa o formulário de contacto e contém métodos para a validação dos dados inseridos no formulário.
 
    * @param {string} name - Nome do utilizador
    * @param {string} email - Endereço de email a validar
@@ -9,7 +9,7 @@ export class Formulario {
    * @param {string} message - Texto da mensagem
    * @param {string} phoneNumber - Número de telefone (opcional)
    */
-  constructor(name, email, selectSubject, customSubject, message, phoneNumber) {
+  constructor(name, email, selectSubject = Null, customSubject= Null, message = Null, phoneNumber) {
     this.name = name
     this.email = email
     this.selectSubject = selectSubject
@@ -88,7 +88,7 @@ export class Formulario {
     return {
       name: this.name,
       email: this.email,
-      phone: this.phone,
+      phone: this.phoneNumber,
     };
 }
 }
