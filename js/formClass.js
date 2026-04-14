@@ -83,7 +83,7 @@ export class Formulario {
 
   get databaseInputObject() {
     /*
-    Devolve o nome, email e telemóvel atual da instância, a efeitos de declarar esta informação para indexedDB
+    Devolve o nome, email e telemóvel da instância actual, a efeitos de declarar esta informação para indexedDB
     */
     return {
       name: this.name,

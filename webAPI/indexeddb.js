@@ -7,6 +7,8 @@ const request = indexedDB.open(dbName, dbVersion);
 
 request.onupgradeneeded = function (event) {
   const db = event.target.result;
+  const storeList = ['ContactUser','']
+
   let objectStore
   // Create an object store named 'users' with 'id' as the keyPath
   if (!db.objectStoreNames.contains('ContactUser')) { //!! Needs to be replaced with a for loop in order to handle multiple tables 
@@ -16,7 +18,9 @@ request.onupgradeneeded = function (event) {
     objectStore = event.target.transaction.objectStore('ContactUser');
     console.log('DatabaseStore "ContactUser" already exists')
   }
+ //!! Pasar para função separada 
 
+  // createIndexName(objectStore indexList)
   if (!objectStore.indexNames.contains('email')) {
     objectStore.createIndex('email', 'email', { unique: true });
   }
@@ -39,6 +43,18 @@ request.onsuccess = function (event) {
 request.onerror = function (event) {
   console.error('Error opening database:', event.target.errorCode);
 };
+
+function createIndexName(store, indexList) { //!! Reservado para ser uma forma dinâmica de criar indexes das tabelas
+  /*
+  Criação dinâmica de indexes, sendo store a tabela para a qual se está a criar os indexes, e indexList o nome dos indexes específicos
+  */
+ 
+  for (element of indexList) {
+  store.createIndex(element, element, { unique: true }) //!! Need to solve unique problem
+  }
+  
+}
+
 
 
 function informUser(event, userInfo) {//!!Reserved in order to send return values to user to a specific html element
@@ -87,8 +103,8 @@ export function handleTransaction(typeOfUser, valueObj) {
  
 export function existsInIndex(storeName, indexName, value, searchString) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
   /*
+
   Esta função verifica a existência de um termo específico //!! De momento devolve o index inteiro
-  
   
   */
   
@@ -150,5 +166,4 @@ export function updateValue(storeName, indexName, oldValue, newValue) { // https
     };
   };
 }
-
-
+}
