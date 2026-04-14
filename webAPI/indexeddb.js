@@ -102,7 +102,7 @@ export function existsInIndex(storeName, indexName, value, searchString) { // ht
     const index = objectStore.index(indexName);
 
     const results = [];
-    const range = IDBKeyRange.bound(searchString, searchString + '\uffff');
+    const range = IDBKeyRange.bound(searchString, searchString + '\uffff'); // Verifica especificamente pela string especifica
     const cursorRequest = index.openCursor(range);
 
     cursorRequest.onsuccess = (event) => {
