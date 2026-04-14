@@ -169,3 +169,42 @@ export function updateValue(storeName, indexName, oldValue, newValue) { // https
   };
 }
 }
+
+
+export function removeRow(storeName, indexName, oldValue, newValue) {
+  /*
+  //!! Reservado para retirar uma linha da base de dados (ou seja remover toda a informação associada a algo como um evento)
+  
+  */  
+  const request = indexedDB.open(dbName, dbVersion); //!! Esta função pode ser convertida com uma condicional if, para também tratar
+                                                    //!! de mudanças e updates do conteúdo
+
+  request.onsuccess = (event) => {
+    const db = event.target.result;
+    const transaction = db.transaction(storeName, 'readonly');
+    const objectStore = transaction.objectStore(storeName);
+    const index = objectStore.index(indexName);
+
+    const results = [];
+    const range = IDBKeyRange.bound(oldValue, oldValue + '\uffff');
+    const cursorRequest = index.openCursor(range);
+
+    cursorRequest.onsuccess = (event) => {
+      const cursor = event.target.result;
+      if (cursor) {
+        if (cursor.value.target === oldValue) {
+                const invoice = cursor.value; //!! Verificar de como mudar isto  (deverá ser target e value?)
+                invoice.target = newValue;
+                const updateRequest = cursor.update(newValue);
+                //!! Add a break here
+      } else {
+        cursor.continue();
+      }
+    };
+  };
+}
+}
+
+
+
+
