@@ -1,7 +1,7 @@
 // Example reference https://github.com/mdn/dom-examples/blob/main/indexeddb-api/main.js
 
 const dbName = 'formDatabase';
-const dbVersion = 3;
+const dbVersion = 3; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
 
 const request = indexedDB.open(dbName, dbVersion);
 
@@ -18,9 +18,11 @@ request.onupgradeneeded = function (event) {
     objectStore = event.target.transaction.objectStore('ContactUser');
     console.log('DatabaseStore "ContactUser" already exists')
   }
+ //!! Call specific getter, iterate through keys, iterate through first value, for actual value, iterate throguh 2nd value~
+ //!! which is true/false to identify unique key 
  //!! Pasar para função separada 
 
-  // createIndexName(objectStore indexList)
+  // createIndexName(objectStore, indexList)
   if (!objectStore.indexNames.contains('email')) {
     objectStore.createIndex('email', 'email', { unique: true });
   }
@@ -104,7 +106,7 @@ export function handleTransaction(typeOfUser, valueObj) {
 export function existsInIndex(storeName, indexName, value, searchString) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
   /*
 
-  Esta função verifica a existência de um termo específico //!! De momento devolve o index inteiro
+  Esta função verifica a existência de um termo específico //!! De momento devolve todos os valores que correspondem
   
   */
   
@@ -127,7 +129,7 @@ export function existsInIndex(storeName, indexName, value, searchString) { // ht
         results.push(cursor.value);
         cursor.continue();
       } else {
-        callback(results); //Se não encontrar mais por onde iterar, devolve o que foi obtido até agora
+        callback(results); //Se chegar ao fim das iterações, devolve o que foi obtido
       }
     };
   };
