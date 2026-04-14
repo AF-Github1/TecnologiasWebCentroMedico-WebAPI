@@ -86,13 +86,19 @@ export function handleTransaction(typeOfUser, valueObj) {
 }
  
 export function existsInIndex(storeName, indexName, value, searchString) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
-  const request = indexedDB.open(dbName, dbVersion); //!! Esta função pode ser convertida com uma condicional if, para também tratar
-                                                    //!! de mudanças e updates do conteúdo
+  /*
+  Esta função verifica a existência de um termo específico //!! De momento devolve o index inteiro
+  
+  
+  */
+  
+  const request = indexedDB.open(dbName, dbVersion);
+
 
   request.onsuccess = (event) => {
     const db = event.target.result;
-    const transaction = db.transaction('ContactUser', 'readonly');
-    const objectStore = transaction.objectStore('ContactUser');
+    const transaction = db.transaction(storeName, 'readonly');
+    const objectStore = transaction.objectStore(storeName);
     const index = objectStore.index(indexName);
 
     const results = [];
@@ -110,3 +116,39 @@ export function existsInIndex(storeName, indexName, value, searchString) { // ht
     };
   };
 }
+
+
+export function updateValue(storeName, indexName, oldValue, newValue) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
+  /*
+  Esta função troca um valor específico //!! De momento não lidará bem com nomes devido a encontrar apenas o primeiro
+  
+  */  
+  const request = indexedDB.open(dbName, dbVersion); //!! Esta função pode ser convertida com uma condicional if, para também tratar
+                                                    //!! de mudanças e updates do conteúdo
+
+  request.onsuccess = (event) => {
+    const db = event.target.result;
+    const transaction = db.transaction(storeName, 'readonly');
+    const objectStore = transaction.objectStore(storeName);
+    const index = objectStore.index(indexName);
+
+    const results = [];
+    const range = IDBKeyRange.bound(oldValue, oldValue + '\uffff');
+    const cursorRequest = index.openCursor(range);
+
+    cursorRequest.onsuccess = (event) => {
+      const cursor = event.target.result;
+      if (cursor) {
+        if (cursor.value.target === oldValue) {
+                const invoice = cursor.value; //!! Verificar de como mudar isto  (deverá ser target e value?)
+                invoice.target = newValue;
+                const updateRequest = cursor.update(newValue);
+                //!! Add a break here
+      } else {
+        cursor.continue();
+      }
+    };
+  };
+}
+
+
