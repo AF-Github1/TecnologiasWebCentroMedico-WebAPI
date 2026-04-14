@@ -85,8 +85,9 @@ export function handleTransaction(typeOfUser, valueObj) {
   
 }
  
-export function existsInIndex(storeName, indexName, value) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
-  const request = indexedDB.open(dbName, dbVersion);
+export function existsInIndex(storeName, indexName, value, searchString) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
+  const request = indexedDB.open(dbName, dbVersion); //!! Esta função pode ser convertida com uma condicional if, para também tratar
+                                                    //!! de mudanças e updates do conteúdo
 
   request.onsuccess = (event) => {
     const db = event.target.result;
@@ -104,7 +105,7 @@ export function existsInIndex(storeName, indexName, value) { // https://itnext.i
         results.push(cursor.value);
         cursor.continue();
       } else {
-        callback(results);
+        callback(results); //Se não encontrar mais por onde iterar, devolve o que foi obtido até agora
       }
     };
   };
