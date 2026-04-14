@@ -9,7 +9,7 @@ export class Formulario {
    * @param {string} message - Texto da mensagem
    * @param {string} phoneNumber - Número de telefone (opcional)
    */
-  constructor(name, email, selectSubject = Null, customSubject= Null, message = Null, phoneNumber) {
+  constructor(name, email, selectSubject = null, customSubject= null, message = null, phoneNumber) {
     this.name = name
     this.email = email
     this.selectSubject = selectSubject
@@ -83,12 +83,13 @@ export class Formulario {
 
   get databaseInputObject() {
     /*
-    Devolve o nome, email e telemóvel da instância actual, a efeitos de declarar esta informação para indexedDB
+    Devolve o nome, email e telemóvel da instância actual, a efeitos de declarar esta informação para indexedDB, e devolve valores bool de false ou true, dependendo
+    se é esperado que seja um valor único em base de dados
     */
     return {
-      name: this.name,
-      email: this.email,
-      phone: this.phoneNumber,
+      name: [this.name, false],
+      email: [this.email, true],
+      phone: [this.phoneNumber, true]
     };
 }
 }

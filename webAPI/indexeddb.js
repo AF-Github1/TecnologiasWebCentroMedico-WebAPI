@@ -1,3 +1,5 @@
+import { Formulario } from '../js/formClass.js'
+
 // Example reference https://github.com/mdn/dom-examples/blob/main/indexeddb-api/main.js
 
 const dbName = 'formDatabase';
@@ -5,59 +7,49 @@ const dbVersion = 3; // Necessário incrementar este valor caso realiza-se mudan
 
 const request = indexedDB.open(dbName, dbVersion);
 
+const storeTables = {  // Novas tabelas deverão ser chamadas aqui
+  'ContactUser': () => new Formulario({}),
+};
+
 request.onupgradeneeded = function (event) {
   const db = event.target.result;
-  const storeList = ['ContactUser','']
 
-  let objectStore
-  // Create an object store named 'users' with 'id' as the keyPath
-  if (!db.objectStoreNames.contains('ContactUser')) { //!! Needs to be replaced with a for loop in order to handle multiple tables 
-    objectStore = db.createObjectStore('ContactUser', { keyPath: 'id', autoIncrement: true });
-    console.log('DatabaseStore "ContactUser"  created')
-  } else {
-    objectStore = event.target.transaction.objectStore('ContactUser');
-    console.log('DatabaseStore "ContactUser" already exists')
-  }
- //!! Call specific getter, iterate through keys, iterate through first value, for actual value, iterate throguh 2nd value~
- //!! which is true/false to identify unique key 
- //!! Pasar para função separada 
+  for (const storeName in storeTables) {
+    let objectStore;
 
-  // createIndexName(objectStore, indexList)
-  if (!objectStore.indexNames.contains('email')) {
-    objectStore.createIndex('email', 'email', { unique: true });
-  }
-  if (!objectStore.indexNames.contains('name')) {
-    objectStore.createIndex('name', 'name', { unique: false });
-  }
-  if (!objectStore.indexNames.contains('phone')) {
-    objectStore.createIndex('phone', 'phone', { unique: true });
-  }
+    if (!db.objectStoreNames.contains(storeName)) {
+      objectStore = db.createObjectStore(storeName, { keyPath: 'id', autoIncrement: true });
+      console.log(`Table created : "${storeName}" `);
+    } else {
+      objectStore = event.target.transaction.objectStore(storeName);
+    }
 
-
-  console.log('Database setup complete');
+    buildIndexes(objectStore, storeTables[storeName]().databaseInputObject); // Instância vazia -> ["", boolVal]
+  }
 };
 
 request.onsuccess = function (event) {
   const db = event.target.result;
-  console.log('Database opened successfully');
+  console.log('Database created successfully');
 };
 
 request.onerror = function (event) {
   console.error('Error opening database:', event.target.errorCode);
 };
 
-function createIndexName(store, indexList) { //!! Reservado para ser uma forma dinâmica de criar indexes das tabelas
+function buildIndexes(store, indexConf) {
   /*
   Criação dinâmica de indexes, sendo store a tabela para a qual se está a criar os indexes, e indexList o nome dos indexes específicos
+  * @param {store} Object - Objecto store, que define a tabela para a qual se está a criar os indexes
+  * @param { indexConf } Object - Objecto que contém o nome, email e nú
   */
- 
-  for (element of indexList) {
-  store.createIndex(element, element, { unique: true }) //!! Need to solve unique problem
+  for (const [key, values] of Object.entries(indexConf)) {
+    const truthyValue = values[1]
+    if (!store.indexNames.contains(key)) {
+      store.createIndex(key, key, { unique: truthyValue });
+    }
   }
-  
 }
-
-
 
 function informUser(event, userInfo) {//!!Reserved in order to send return values to user to a specific html element
                                   // probably on screen notification (similar to actual form, without interruption) 
@@ -77,11 +69,10 @@ function informUser(event, userInfo) {//!!Reserved in order to send return value
 
 export function handleTransaction(typeOfUser, valueObj) { 
   /*
-  Cria a tabela na base de dados de acordo com o nome providenciado e insere a linha com os valores inseridos como parâmetros
+  Insere a linha com os valores inseridos como parâmetros, numa tabela específica
 
-  * @param {typeOfUser} string - Contém o nome da nova tabela a criar na base de dados, caso ainda não tenha sido criada
-    de forma a criar o efeito animado
-  * @param {valueObj} Object - Objecto que contém o nome, email e número de telefone do utilizador, para serem adicionados como atributos na tabela
+  * @param {typeOfUser} string - Contém o nome da tabela a onde adiciona-se os valores
+  * @param {valueObj} Object - Objecto que contém os valores a adicionar
 
   */
   const request = indexedDB.open(dbName, dbVersion);
@@ -90,20 +81,25 @@ export function handleTransaction(typeOfUser, valueObj) {
     const db = event.target.result;
     const transaction = db.transaction(typeOfUser, 'readwrite');
     const objectStore = transaction.objectStore(typeOfUser);
-    const addRequest = objectStore.add(valueObj);
+
+    // This section removes truthy values from object
+    const strippedList = {}; 
+    for (const key in valueObj) {
+      strippedList[key] = valueObj[key][0]; 
+    }
+    const addRequest = objectStore.add(strippedList);
 
     addRequest.onsuccess = function () {
-      console.log('User added:', typeOfUser);
+      console.log('Transaction complete for:', typeOfUser);
     };
 
     addRequest.onerror = function (event) {
-      console.error('Error adding user:', event.target.errorCode);
+      console.error('Error completing transaction:', event.target.errorCode);
     };
   };
-  
 }
  
-export function existsInIndex(storeName, indexName, value, searchString) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
+export function existsInIndex(storeName, indexName, searchString, callback) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
   /*
 
   Esta função verifica a existência de um termo específico //!! De momento devolve todos os valores que correspondem
@@ -120,7 +116,7 @@ export function existsInIndex(storeName, indexName, value, searchString) { // ht
     const index = objectStore.index(indexName);
 
     const results = [];
-    const range = IDBKeyRange.bound(searchString, searchString + '\uffff'); // Verifica especificamente pela string especifica
+    const range = IDBKeyRange.bound(searchString, searchString + '\uffff'); // Verifica especificamente pela string indicada
     const cursorRequest = index.openCursor(range);
 
     cursorRequest.onsuccess = (event) => {
@@ -133,16 +129,15 @@ export function existsInIndex(storeName, indexName, value, searchString) { // ht
       }
     };
   };
+    request.onerror = (err) => console.error("Erro em pesquisa:", err);
 }
 
 
-export function updateValue(storeName, indexName, oldValue, newValue) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
-  /*
-  Esta função troca um valor específico //!! De momento não lidará bem com nomes devido a encontrar apenas o primeiro
+export function updateValue(storeName, indexName, searchString, callback) { //!! Reservada para actualizar valor específico em base de dados
+
   
-  */  
-  const request = indexedDB.open(dbName, dbVersion); //!! Esta função pode ser convertida com uma condicional if, para também tratar
-                                                    //!! de mudanças e updates do conteúdo
+  const request = indexedDB.open(dbName, dbVersion);
+
 
   request.onsuccess = (event) => {
     const db = event.target.result;
@@ -151,33 +146,29 @@ export function updateValue(storeName, indexName, oldValue, newValue) { // https
     const index = objectStore.index(indexName);
 
     const results = [];
-    const range = IDBKeyRange.bound(oldValue, oldValue + '\uffff');
+    const range = IDBKeyRange.bound(searchString, searchString + '\uffff'); // Verifica especificamente pela string indicada
     const cursorRequest = index.openCursor(range);
 
     cursorRequest.onsuccess = (event) => {
       const cursor = event.target.result;
       if (cursor) {
-        if (cursor.value.target === oldValue) {
-                const invoice = cursor.value; //!! Verificar de como mudar isto  (deverá ser target e value?)
-                invoice.target = newValue;
-                const updateRequest = cursor.update(newValue);
-                //!! Add a break here
-      } else {
+        results.push(cursor.value);
         cursor.continue();
+      } else {
+        callback(results); //Se chegar ao fim das iterações, devolve o que foi obtido
       }
     };
   };
-}
+    request.onerror = (err) => console.error("Erro em pesquisa:", err);
 }
 
 
-export function removeRow(storeName, indexName, oldValue, newValue) {
-  /*
-  //!! Reservado para retirar uma linha da base de dados (ou seja remover toda a informação associada a algo como um evento)
+export function removeRow(storeName, indexName, searchString, callback) { //!! Reservada para eliminar linha em base de dados
+  /*  
+  */
   
-  */  
-  const request = indexedDB.open(dbName, dbVersion); //!! Esta função pode ser convertida com uma condicional if, para também tratar
-                                                    //!! de mudanças e updates do conteúdo
+  const request = indexedDB.open(dbName, dbVersion);
+
 
   request.onsuccess = (event) => {
     const db = event.target.result;
@@ -186,25 +177,18 @@ export function removeRow(storeName, indexName, oldValue, newValue) {
     const index = objectStore.index(indexName);
 
     const results = [];
-    const range = IDBKeyRange.bound(oldValue, oldValue + '\uffff');
+    const range = IDBKeyRange.bound(searchString, searchString + '\uffff'); // Verifica especificamente pela string indicada
     const cursorRequest = index.openCursor(range);
 
     cursorRequest.onsuccess = (event) => {
       const cursor = event.target.result;
       if (cursor) {
-        if (cursor.value.target === oldValue) {
-                const invoice = cursor.value; //!! Verificar de como mudar isto  (deverá ser target e value?)
-                invoice.target = newValue;
-                const updateRequest = cursor.update(newValue);
-                //!! Add a break here
-      } else {
+        results.push(cursor.value);
         cursor.continue();
+      } else {
+        callback(results); //Se chegar ao fim das iterações, devolve o que foi obtido
       }
     };
   };
+    request.onerror = (err) => console.error("Erro em pesquisa:", err);
 }
-}
-
-
-
-
