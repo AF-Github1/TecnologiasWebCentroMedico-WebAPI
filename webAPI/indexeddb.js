@@ -2,6 +2,7 @@ import { Formulario } from '../js/formClass.js'
 
 // Example reference https://github.com/mdn/dom-examples/blob/main/indexeddb-api/main.js
 
+
 const dbName = 'formDatabase';
 const dbVersion = 3; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
 
@@ -126,6 +127,7 @@ export function existsInIndex(storeName, indexName, searchString, callback) { //
         cursor.continue();
       } else {
         callback(results); //Se chegar ao fim das iterações, devolve o que foi obtido
+        //!! Informar utilizador aqui
       }
     };
   };
@@ -163,8 +165,12 @@ export function updateValue(storeName, indexName, searchString, callback) { //!!
 }
 
 
-export function removeRow(storeName, indexName, searchString, callback) { //!! Reservada para eliminar linha em base de dados
-  /*  
+export function removeRow(storeName, indexName, searchString) { //!! Reservada para eliminar linha em base de dados
+  /*
+
+  Pesquisa por um valor específico, apagando a primeira linha onde encontrar este valor (//!!apenas suposto utilizar isto para 
+  indices específicos com id, ou com um email ou telefone, devido a nomes poderem repetir-se)
+
   */
   
   const request = indexedDB.open(dbName, dbVersion);
@@ -182,11 +188,8 @@ export function removeRow(storeName, indexName, searchString, callback) { //!! R
 
     cursorRequest.onsuccess = (event) => {
       const cursor = event.target.result;
-      if (cursor) {
-        results.push(cursor.value);
-        cursor.continue();
-      } else {
-        callback(results); //Se chegar ao fim das iterações, devolve o que foi obtido
+      if (cursor) { //!! Check if it properly iterates through whole DB
+        objectStore.delete(cursor.primaryKey);
       }
     };
   };
