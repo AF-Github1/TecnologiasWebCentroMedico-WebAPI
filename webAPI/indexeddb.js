@@ -245,7 +245,7 @@ export function updateTableContactUser(storeName = "ContactUser") {
         };
     };
 }
-// These allow the user to call 
+// These allow the user to call the functions through button inputs
 window.updateValue = updateValue;
 window.removeRow = removeRow;
 window.existsInIndex = existsInIndex;
