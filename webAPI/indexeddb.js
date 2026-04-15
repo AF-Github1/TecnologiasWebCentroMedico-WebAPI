@@ -24,8 +24,7 @@ request.onupgradeneeded = function (event) {
     } else {
       objectStore = event.target.transaction.objectStore(storeName);
     }
-    //!! this is not dynamic
-    buildIndexes(objectStore, storeTables[storeName]()); // Instância vazia -> ["", boolVal]
+    buildIndexes(objectStore, storeTables[storeName]()); // Instância vazia -> [key: "", boolVal]
   }
 };
 
@@ -42,7 +41,7 @@ function buildIndexes(store, indexConf) {
   /*
   Criação dinâmica de indexes, sendo store a tabela para a qual se está a criar os indexes, e indexList o nome dos indexes específicos
   * @param {store} Object - Objecto store, que define a tabela para a qual se está a criar os indexes
-  * @param { indexConf } Object - Objecto que contém o nome, email e nú
+  * @param { indexConf } Object - Objecto que contém o nome, email e número telefonico, e o valor de verdadeiro ou falso, para identificar se o index será único ou não
   */
   for (const [key, values] of Object.entries(indexConf)) {
     const truthyValue = values[1]
