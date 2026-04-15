@@ -175,23 +175,16 @@ export function removeRow(storeName, indexName, searchString) { //!! Reservada p
   
   const request = indexedDB.open(dbName, dbVersion);
 
-
   request.onsuccess = (event) => {
     const db = event.target.result;
     const transaction = db.transaction(storeName, 'readonly');
     const objectStore = transaction.objectStore(storeName);
     const index = objectStore.index(indexName);
 
-    const results = [];
-    const range = IDBKeyRange.bound(searchString, searchString + '\uffff'); // Verifica especificamente pela string indicada
-    const cursorRequest = index.openCursor(range);
-
-    cursorRequest.onsuccess = (event) => {
-      const cursor = event.target.result;
-      if (cursor) { //!! Check if it properly iterates through whole DB
-        objectStore.delete(cursor.primaryKey);
-      }
-    };
+    const deleteIndex = store.delete(1) // https://www.tutorialspoint.com/indexeddb/indexeddb_deleting_data.htm#:~:text=Syntax,database%20which%20are%20not%20required.
+    deleteIndex.onsuccess = function(){
+      console.log('Entry deleted: ', ); //!! need to change parameters in order to identify indexes
+  }
   };
     request.onerror = (err) => console.error("Erro em pesquisa:", err);
 }
