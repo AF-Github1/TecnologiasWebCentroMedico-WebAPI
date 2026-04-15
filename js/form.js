@@ -4,9 +4,11 @@ import {handleTransaction } from '/webAPI/indexeddb.js'
 export function fillMessage () {
  
  /*
+
  Preenche a mensagem e o assunto com texto pré-definido consoante a opção selecionada.
  Se o utilizador escolher "Outro assunto...", mostra o campo de texto livre para o assunto.
- A mensagem continua editável após ser preenchida automaticamente.
+ A mensagem continua editável após ser preenchida automaticamente
+
  */
  const predefinedMessages = {
  'Informações sobre oportunidades': 'Olá,\n\nGostaria de obter mais informações sobre as oportunidades disponíveis no Centro Académico Clínico dos Açores.\n\nCom cumprimentos,\n',

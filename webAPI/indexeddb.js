@@ -2,7 +2,6 @@ import { Formulario } from '../js/formClass.js'
 
 // Example reference https://github.com/mdn/dom-examples/blob/main/indexeddb-api/main.js
 
-
 const dbName = 'formDatabase';
 const dbVersion = 7; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
 
@@ -26,7 +25,7 @@ request.onupgradeneeded = function (event) {
     } else {
       objectStore = event.target.transaction.objectStore(storeName);
     }
-    buildIndexes(objectStore, storeTables[storeName]()); // Instância vazia -> [key: "", boolVal]
+    buildIndexes(objectStore, storeTables[storeName]()); //  ->  { key: ["", boolVal] }
   }
 };
 
@@ -123,7 +122,9 @@ export function existsInIndex(storeName, indexName, searchString, callback) { //
 }
 
 
-export function updateValue(storeName, indexName, searchString, newValue) { //!! Reservada para actualizar valor específico em base de dados
+export function updateValue(storeName, indexName, searchString, newValue) {
+
+  /* Esta função atualiza o nome numa base de dados  */ //!! Necessário alterar para permitir utilizador escolher
   const request = indexedDB.open(dbName, dbVersion);
 
   request.onsuccess = (event) => {
@@ -158,7 +159,7 @@ export function removeRow(storeName, indexName, searchString) { // https://www.t
   /*
 
   Pesquisa por um valor específico, apagando a primeira linha onde encontrar este valor (//!!apenas suposto utilizar isto para 
-  indices específicos com id, ou com um email ou telefone, devido a nomes poderem repetir-se)
+  indices específicos com id, ou com um email ou telefone, devido a nomes poderem repetir-se, necessário criar excepção para nome)
 
   */
   
@@ -193,6 +194,13 @@ export function removeRow(storeName, indexName, searchString) { // https://www.t
 
 
 export function updateTableContactUser(storeName = "ContactUser") {
+  /*
+
+  Esta função é responsável por manter a tabela que demonstra o que de momento está na base de dados atualizada da parte dos utilizadores que usaram o formulário de contacto
+  na parte de interface do site, permitindo ao utilizador ver as entradas atuais na base de dados, editar-las e remover-las
+  //!! Necessário refactorizar isto para permitir servir para a tabela de eventos
+
+  */
     const request = indexedDB.open(dbName, dbVersion);
 
     request.onsuccess = (event) => {
