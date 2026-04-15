@@ -4,12 +4,12 @@ import { Formulario } from '../js/formClass.js'
 
 
 const dbName = 'formDatabase';
-const dbVersion = 3; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
+const dbVersion = 6; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
 
 const request = indexedDB.open(dbName, dbVersion);
 
 const storeTables = {  // Novas tabelas deverão ser chamadas aqui
-  'ContactUser': () => new Formulario({}),
+  'ContactUser': () => new Formulario({}).databaseInputObject
 };
 
 request.onupgradeneeded = function (event) {
@@ -24,8 +24,8 @@ request.onupgradeneeded = function (event) {
     } else {
       objectStore = event.target.transaction.objectStore(storeName);
     }
-
-    buildIndexes(objectStore, storeTables[storeName]().databaseInputObject); // Instância vazia -> ["", boolVal]
+    //!! this is not dynamic
+    buildIndexes(objectStore, storeTables[storeName]()); // Instância vazia -> ["", boolVal]
   }
 };
 
@@ -52,21 +52,6 @@ function buildIndexes(store, indexConf) {
   }
 }
 
-function informUser(event, userInfo) {//!!Reserved in order to send return values to user to a specific html element
-                                  // probably on screen notification (similar to actual form, without interruption) 
-  //!! userInfo poderá não conseguir ser imprimido, formatar texto
-  event.preventDefault()
-  //!! Utilizar a função de getFromDatabase a nível de verificar (não listar)
-
-  userCheck = false
-  if (!userCheck) {
-  alert(`Já existe um utilizador com estas credenciais`)
-  } else if ({}) {
-  alert(`O utilizador ${userInfo} foi eliminado`)
-  }
-  
-
-}
 
 export function handleTransaction(typeOfUser, valueObj) { 
   /*
@@ -92,6 +77,7 @@ export function handleTransaction(typeOfUser, valueObj) {
 
     addRequest.onsuccess = function () {
       console.log('Transaction complete for:', typeOfUser);
+      updateTableContactUser();
     };
 
     addRequest.onerror = function (event) {
@@ -103,7 +89,7 @@ export function handleTransaction(typeOfUser, valueObj) {
 export function existsInIndex(storeName, indexName, searchString, callback) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
   /*
 
-  Esta função verifica a existência de um termo específico //!! De momento devolve todos os valores que correspondem
+  Esta função verifica a existência de um termo específico
   
   */
   
@@ -125,6 +111,7 @@ export function existsInIndex(storeName, indexName, searchString, callback) { //
       if (cursor) {
         results.push(cursor.value);
         cursor.continue();
+        updateTableContactUser();
       } else {
         callback(results); //Se chegar ao fim das iterações, devolve o que foi obtido
         //!! Informar utilizador aqui
@@ -135,37 +122,38 @@ export function existsInIndex(storeName, indexName, searchString, callback) { //
 }
 
 
-export function updateValue(storeName, indexName, searchString, callback) { //!! Reservada para actualizar valor específico em base de dados
-
-  
+export function updateValue(storeName, indexName, searchString, newValue) { //!! Reservada para actualizar valor específico em base de dados
   const request = indexedDB.open(dbName, dbVersion);
-
 
   request.onsuccess = (event) => {
     const db = event.target.result;
-    const transaction = db.transaction(storeName, 'readonly');
+    const transaction = db.transaction(storeName, 'readwrite');
     const objectStore = transaction.objectStore(storeName);
-    const index = objectStore.index(indexName);
 
-    const results = [];
-    const range = IDBKeyRange.bound(searchString, searchString + '\uffff'); // Verifica especificamente pela string indicada
-    const cursorRequest = index.openCursor(range);
+    const target = (indexName === 'id') ? objectStore : objectStore.index(indexName);
+    const searchValue = (indexName === 'id') ? Number(searchString) : searchString;
+    const getRequest = target.get(searchValue);
 
-    cursorRequest.onsuccess = (event) => {
-      const cursor = event.target.result;
-      if (cursor) {
-        results.push(cursor.value);
-        cursor.continue();
-      } else {
-        callback(results); //Se chegar ao fim das iterações, devolve o que foi obtido
+    getRequest.onsuccess = () => {
+      const data = getRequest.result;
+      if (data) {
+        Object.assign(data, newValue);
+
+        const updateRequest = objectStore.put(data);
+        updateRequest.onsuccess = () => {
+          console.log("Value updated");
+          updateTableContactUser();
+        }
+        } else {
+          console.log("Requested value not found");
       }
     };
   };
-    request.onerror = (err) => console.error("Erro em pesquisa:", err);
+    request.onerror = (err) => console.error("Error while updating value: ", err);
 }
 
 
-export function removeRow(storeName, indexName, searchString) { //!! Reservada para eliminar linha em base de dados
+export function removeRow(storeName, indexName, searchString) { // https://www.tutorialspoint.com/indexeddb/indexeddb_deleting_data.htm#:~:text=Syntax,database%20which%20are%20not%20required.
   /*
 
   Pesquisa por um valor específico, apagando a primeira linha onde encontrar este valor (//!!apenas suposto utilizar isto para 
@@ -177,14 +165,90 @@ export function removeRow(storeName, indexName, searchString) { //!! Reservada p
 
   request.onsuccess = (event) => {
     const db = event.target.result;
-    const transaction = db.transaction(storeName, 'readonly');
+    const transaction = db.transaction(storeName, 'readwrite');
     const objectStore = transaction.objectStore(storeName);
-    const index = objectStore.index(indexName);
 
-    const deleteIndex = store.delete(1) // https://www.tutorialspoint.com/indexeddb/indexeddb_deleting_data.htm#:~:text=Syntax,database%20which%20are%20not%20required.
-    deleteIndex.onsuccess = function(){
-      console.log('Entry deleted: ', ); //!! need to change parameters in order to identify indexes
-  }
+    const target = (indexName === 'id') ? objectStore : objectStore.index(indexName);
+    const searchValue = (indexName === 'id') ? Number(searchString) : searchString;
+    const getRequest = target.getKey(searchValue);
+
+    getRequest.onsuccess = () => {
+      const primaryKey = getRequest.result;
+
+      if (primaryKey !== undefined) {
+        const deleteRequest = objectStore.delete(primaryKey);
+
+        deleteRequest.onsuccess = () => {
+          console.log(`Entry with index ${indexName} = "${searchString}" deleted successfully.`);
+        updateTableContactUser();
+        };
+      } else {
+        console.log("Requested value not found");
+      }
+    };
   };
-    request.onerror = (err) => console.error("Erro em pesquisa:", err);
+  request.onerror = (err) => console.error("Error in search:", err);
 }
+
+
+export function updateTableContactUser(storeName = "ContactUser") {
+    const request = indexedDB.open(dbName, dbVersion);
+
+    request.onsuccess = (event) => {
+        const db = event.target.result;
+        const transaction = db.transaction(storeName, 'readonly');
+        const objectStore = transaction.objectStore(storeName);
+        const tbody = document.getElementById('DB-list');
+        
+        tbody.innerHTML = ""; // Retira linha depois da ação realizada
+
+
+        objectStore.openCursor().onsuccess = (event) => {
+            const cursor = event.target.result;
+            if (cursor) {
+                const userData = cursor.value;
+
+                // Create row
+                const row = document.createElement('tr'); 
+
+                // Put value in cells
+                const nameCell = document.createElement('td'); 
+                nameCell.textContent = userData.name;
+                row.appendChild(nameCell);
+                const emailCell = document.createElement('td');
+                emailCell.textContent = userData.email;
+                row.appendChild(emailCell);
+                const phoneCell = document.createElement('td');
+                phoneCell.textContent = userData.phone || '---';
+                row.appendChild(phoneCell);
+
+                const actionsCell = document.createElement('td');
+                const editBtn = document.createElement('button');
+                editBtn.textContent = 'Editar';
+                editBtn.className = 'btn-table-edit';
+                editBtn.onclick = () => {
+                    const newName = prompt('Novo nome:', userData.name);
+                    if (newName) window.updateValue(storeName, 'email', userData.email, { name: newName });
+                };
+
+                const delBtn = document.createElement('button');
+                delBtn.textContent = 'Remover';
+                delBtn.className = 'btn-table-del';
+                delBtn.onclick = () => window.removeRow(storeName, 'id', userData.id);
+
+                actionsCell.appendChild(editBtn);
+                actionsCell.appendChild(delBtn);
+                row.appendChild(actionsCell);
+
+                tbody.appendChild(row);
+                cursor.continue();
+            }
+        };
+    };
+}
+// These allow the user to call 
+window.updateValue = updateValue;
+window.removeRow = removeRow;
+window.existsInIndex = existsInIndex;
+window.handleTransaction = handleTransaction;
+window.updateTableContactUser = updateTableContactUser;

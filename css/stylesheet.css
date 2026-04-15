@@ -409,6 +409,49 @@ th {
 }
 
 
+/* Tabela para indexedDB*/
+
+#DB-table {
+    margin-top: 20px;
+    background-color: #fff;
+}
+
+#DB-table th {
+    background-color: #0f9d58;
+    color: white;
+    border: 1px solid #0c7c45;
+}
+
+#DB-table td {
+    border: 1px solid #ddd;
+    font-size: 0.95rem;
+}
+
+.btn-table-edit, .btn-table-del {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.btn-table-edit {
+    background-color: #1a73e8; 
+    color: white;
+}
+
+.btn-table-del {
+    background-color: #d93025;
+    color: white;
+}
+
+
+
+
+
 /* FOOTER */
 footer {
     background-color: #0A1F44;
