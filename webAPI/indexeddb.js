@@ -102,7 +102,7 @@ export function existsInIndex(storeName, indexName, searchString, callback) { //
     const index = objectStore.index(indexName);
 
     const results = [];
-    const range = IDBKeyRange.bound(searchString, searchString + '\uffff'); // Verifica especificamente pela string indicada
+    const range = IDBKeyRange.bound(searchString, searchString + '\uffff'); // Verifica tudo o que contem a string
     const cursorRequest = index.openCursor(range);
 
     cursorRequest.onsuccess = (event) => {
@@ -129,8 +129,8 @@ export function updateValue(storeName, indexName, searchString, newValue) { //!!
     const transaction = db.transaction(storeName, 'readwrite');
     const objectStore = transaction.objectStore(storeName);
 
-    const target = (indexName === 'id') ? objectStore : objectStore.index(indexName);
-    const searchValue = (indexName === 'id') ? Number(searchString) : searchString;
+    const target = (indexName === 'id') ? objectStore : objectStore.index(indexName); // Checks if its id, otherwis check for string name as index (id is not index)
+    const searchValue = (indexName === 'id') ? Number(searchString) : searchString; // convert input to int in case of looking for id
     const getRequest = target.get(searchValue);
 
     getRequest.onsuccess = () => {
