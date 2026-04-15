@@ -118,6 +118,54 @@ section.investigacao h3{
     transform-origin: left center;
 }
 
+
+/* NEWSLETTER */
+.newsletter {
+    padding: 60px 20px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.newsletter h3 {
+    font-family: 'Poppins', sans-serif;
+    color: #0f9d58;
+    margin-bottom: 30px;
+}
+
+.newsletter-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#newsletter-form input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: inherit;
+}
+
+#newsletter-form button {
+    padding: 12px;
+    background-color: #0f9d58;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+#newsletter-message {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+
 /* PARCEIROS */
 .parceiros {
     margin-top: 30px;

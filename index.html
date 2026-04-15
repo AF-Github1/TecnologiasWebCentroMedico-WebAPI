@@ -21,6 +21,9 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.145.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.145.0/examples/js/loaders/GLTFLoader.js"></script>
 
+  <script type="module" src="webAPI/indexeddb.js"></script>
+  <script type="module" src="js/newsletter.js"></script>
+
 </head>
 
 <body>
@@ -143,6 +146,23 @@
           </div>
         </div>
       </section>
+
+    <!--   Secção respectiva à newsletter   -->
+      <section id="newsletter" class="newsletter">
+      <div class="newsletter-container">
+        <div class="newsletter-text">
+            <h3>Deseja saber mais? Inscreva-se no nosso newsletter!</h3>
+        </div>
+        <div class="newsletter-inputs">
+            <form id="newsletter-form">
+                <input type="text" id="news-name" placeholder="Nome" required>
+                <input type="email" id="news-email" placeholder="E-mail" required>
+                <button type="submit">Subscrever</button>
+            </form>
+        </div>
+      </div>
+      </section>
+
 
       <hr class="linebreak">
 

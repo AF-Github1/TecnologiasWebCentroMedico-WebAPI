@@ -58,7 +58,7 @@ export function checkForm (event) {
   if (formInformation.isValid()) {
     alert(`${formInformation.name}, o seu formulário foi enviado com sucesso`)
     handleTransaction("ContactUser", formInformation.databaseInputObject);
-
+    event.target.reset();
   } else if (!formInformation.isPhoneValid()) {
     alert('Número de telefone inválido. Insira apenas dígitos (6 a 15 números).')
   } else {

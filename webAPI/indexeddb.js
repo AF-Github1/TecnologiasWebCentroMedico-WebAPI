@@ -4,12 +4,14 @@ import { Formulario } from '../js/formClass.js'
 
 
 const dbName = 'formDatabase';
-const dbVersion = 6; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
+const dbVersion = 7; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
 
 const request = indexedDB.open(dbName, dbVersion);
 
 const storeTables = {  // Novas tabelas deverão ser chamadas aqui
-  'ContactUser': () => new Formulario({}).databaseInputObject
+  'ContactUser': () => new Formulario({}).databaseInputObject,
+  'NewsletterUser': () => ({name: ["", false],  email: ["", true] 
+  })
 };
 
 request.onupgradeneeded = function (event) {
