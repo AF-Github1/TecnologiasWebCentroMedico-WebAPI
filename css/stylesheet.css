@@ -498,6 +498,135 @@ th {
 
 
 
+/* EVENTOS */
+.eventos {
+    padding: 60px 40px;
+}
+
+.eventos h1 {
+    text-align: center;
+    color: #0f9d58;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 30px;
+}
+
+.eventos-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.event-form {
+    width: 100%;
+    max-width: 800px;
+}
+
+.event-form h4 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#event-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+#event-form input {
+    flex: 1 1 calc(45% - 10px);
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+#event-form #description {
+    flex: 1 1 100%;
+}
+
+#event-form button {
+    flex: 1 1 100%;
+    padding: 15px;
+    background-color: #0f9d58;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    border-radius: 4px;
+}
+
+#event-form button:hover {
+    background-color: #0c7c45;
+}
+
+/* TABELA DE BASE DE DADOS */
+#DB-display {
+    padding: 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+#DB-display h2 {
+    color: #0f9d58;
+    margin-bottom: 20px;
+}
+
+#DB-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+#DB-table th {
+    background-color: #0f9d58;
+    color: white;
+    padding: 15px;
+    text-align: left;
+}
+
+#DB-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+#DB-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilo para os botões de Ação na Tabela */
+.edit-btn, .delete-btn {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.edit-btn { background: #ffc107; }
+.delete-btn { background: #dc3545; color: white; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* FOOTER */

@@ -23,6 +23,7 @@
 
   <script type="module" src="webAPI/indexeddb.js"></script>
   <script type="module" src="js/newsletter.js"></script>
+  <script type="module" src="js/eventForm.js"></script>
 
 </head>
 
@@ -308,15 +309,37 @@
       
 
 
-      <!--   Secção respectiva à visualização de base de dados    -->
+      <!--  Secção de Eventos, contendo o formulário para adicionar eventos e a tabela para o utilizador os conseguir visualizar e manipular-->
+      <hr class="linebreak">
+
+      <section id="eventos" class="eventos" tabindex="0">
+        <h1>Eventos</h1>
+        <div class="eventos-container">
+
+          <div class="event-form">
+            <h4>Introduza a informação do evento aqui:</h4>
+            <form id = "event-form">
+              <input id = "title" placeholder="Titulo*">
+              <input id = "description" placeholder="Descrição*">
+              <input id = "date" placeholder="Data*">
+              <input id = "time" placeholder="Hora*">
+              <input id = "localization" placeholder="Local*">
+              <button type="submit">Enviar</button>
+            </form>
+          </div>
+        </div>
+        </section>
+      
+      <!--   Secção respectiva à visualização de base de dados para formulário de eventos    -->
       <section id="DB-display">
-      <h2>Lista de Contactos</h2>
+      <h2>Lista de Eventos</h2>
       <table id="DB-table">
         <thead>
           <tr>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Telefone</th>
+            <th>Título</th>
+            <th>Data/Hora</th>
+            <th>Local</th>
+            <th>Descrição</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -324,6 +347,8 @@
           </tbody>
       </table>
       </section>
+
+
 
 
 

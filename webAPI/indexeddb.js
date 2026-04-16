@@ -3,13 +3,15 @@ import { Formulario } from '../js/formClass.js'
 // Example reference https://github.com/mdn/dom-examples/blob/main/indexeddb-api/main.js
 
 const dbName = 'formDatabase';
-const dbVersion = 7; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
+const dbVersion = 10; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
 
 const request = indexedDB.open(dbName, dbVersion);
 
 const storeTables = {  // Novas tabelas deverão ser chamadas aqui
   'ContactUser': () => new Formulario({}).databaseInputObject,
-  'NewsletterUser': () => ({name: ["", false],  email: ["", true] 
+  'NewsletterUser': () => ({name: ["", false],  email: ["", true],
+  }),
+  'Events': () => ({title: ["", true], description: ["", false], date: ["", false], time:["", false], localization:["", false],
   })
 };
 
@@ -77,7 +79,6 @@ export function handleTransaction(typeOfUser, valueObj) {
 
     addRequest.onsuccess = function () {
       console.log('Transaction complete for:', typeOfUser);
-      updateTableContactUser();
     };
 
     addRequest.onerror = function (event) {
@@ -111,7 +112,6 @@ export function existsInIndex(storeName, indexName, searchString, callback) { //
       if (cursor) {
         results.push(cursor.value);
         cursor.continue();
-        updateTableContactUser();
       } else {
         callback(results); //Se chegar ao fim das iterações, devolve o que foi obtido
         //!! Informar utilizador aqui
@@ -144,7 +144,7 @@ export function updateValue(storeName, indexName, searchString, newValue) {
         const updateRequest = objectStore.put(data);
         updateRequest.onsuccess = () => {
           console.log("Value updated");
-          updateTableContactUser();
+          updateTableEvents()
         }
         } else {
           console.log("Requested value not found");
@@ -182,7 +182,7 @@ export function removeRow(storeName, indexName, searchString) { // https://www.t
 
         deleteRequest.onsuccess = () => {
           console.log(`Entry with index ${indexName} = "${searchString}" deleted successfully.`);
-        updateTableContactUser();
+        updateTableEvents()
         };
       } else {
         console.log("Requested value not found");
@@ -193,12 +193,11 @@ export function removeRow(storeName, indexName, searchString) { // https://www.t
 }
 
 
-export function updateTableContactUser(storeName = "ContactUser") {
+export function updateTableEvents(storeName = "Events") {
   /*
 
-  Esta função é responsável por manter a tabela que demonstra o que de momento está na base de dados atualizada da parte dos utilizadores que usaram o formulário de contacto
-  na parte de interface do site, permitindo ao utilizador ver as entradas atuais na base de dados, editar-las e remover-las
-  //!! Necessário refactorizar isto para permitir servir para a tabela de eventos
+  Esta função é responsável por manter a tabela que demonstra o que de momento está na base de dados atualizada da parte dos utilizadores que usaram o formulário para criação de
+  eventos, permitindo aos utilizador apagar ou editar o conteúdo da base de dados através desta tabela
 
   */
     const request = indexedDB.open(dbName, dbVersion);
@@ -211,39 +210,45 @@ export function updateTableContactUser(storeName = "ContactUser") {
         
         tbody.innerHTML = ""; // Retira linha depois da ação realizada
 
-
         objectStore.openCursor().onsuccess = (event) => {
             const cursor = event.target.result;
             if (cursor) {
-                const userData = cursor.value;
+                const eventData = cursor.value;
 
                 // Create row
                 const row = document.createElement('tr'); 
 
-                // Put value in cells
-                const nameCell = document.createElement('td'); 
-                nameCell.textContent = userData.name;
-                row.appendChild(nameCell);
-                const emailCell = document.createElement('td');
-                emailCell.textContent = userData.email;
-                row.appendChild(emailCell);
-                const phoneCell = document.createElement('td');
-                phoneCell.textContent = userData.phone || '---';
-                row.appendChild(phoneCell);
+                const titleCell = document.createElement('td'); 
+                titleCell.textContent = eventData.title;
+                row.appendChild(titleCell);
+
+                const dateTimeCell = document.createElement('td');
+                dateTimeCell.textContent = `${eventData.date} às ${eventData.time}`; // hora e dia combinados em output
+                row.appendChild(dateTimeCell);
+
+                const localCell = document.createElement('td');
+                localCell.textContent = eventData.localization;
+                row.appendChild(localCell);
+
+                const descCell = document.createElement('td');
+                descCell.textContent = eventData.description;
+                row.appendChild(descCell);
 
                 const actionsCell = document.createElement('td');
                 const editBtn = document.createElement('button');
                 editBtn.textContent = 'Editar';
                 editBtn.className = 'btn-table-edit';
                 editBtn.onclick = () => {
-                    const newName = prompt('Novo nome:', userData.name);
-                    if (newName) window.updateValue(storeName, 'email', userData.email, { name: newName });
+                    const newTitle = prompt('Novo título do evento:', eventData.title);
+                    if (newTitle) {
+                        window.updateValue(storeName, 'id', eventData.id, { title: newTitle });
+                    }
                 };
 
                 const delBtn = document.createElement('button');
                 delBtn.textContent = 'Remover';
                 delBtn.className = 'btn-table-del';
-                delBtn.onclick = () => window.removeRow(storeName, 'id', userData.id);
+                delBtn.onclick = () => window.removeRow(storeName, 'id', eventData.id);
 
                 actionsCell.appendChild(editBtn);
                 actionsCell.appendChild(delBtn);
@@ -260,4 +265,8 @@ window.updateValue = updateValue;
 window.removeRow = removeRow;
 window.existsInIndex = existsInIndex;
 window.handleTransaction = handleTransaction;
-window.updateTableContactUser = updateTableContactUser;
+window.updateTableEvents = updateTableEvents;
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateTableEvents();
+});
