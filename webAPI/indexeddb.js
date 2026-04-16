@@ -1,6 +1,5 @@
 import { Formulario } from '../js/formClass.js'
 import { searchAddress } from '../js/eventsMap.js';
-// Example reference https://github.com/mdn/dom-examples/blob/main/indexeddb-api/main.js
 
 const dbName = 'formDatabase';
 const dbVersion = 11; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
@@ -87,7 +86,7 @@ export function handleTransaction(typeOfUser, valueObj) {
   };
 }
  
-export function existsInIndex(storeName, indexName, searchString, callback) { // https://itnext.io/searching-in-your-indexeddb-database-d7cbf202a17
+export function existsInIndex(storeName, indexName, searchString, callback) {
   /*
 
   Esta função verifica a existência de um termo específico
@@ -163,7 +162,7 @@ export function updateValue(storeName, indexName, searchString, newValue) {
 }
 
 
-export function removeRow(storeName, indexName, searchString) { // https://www.tutorialspoint.com/indexeddb/indexeddb_deleting_data.htm#:~:text=Syntax,database%20which%20are%20not%20required.
+export function removeRow(storeName, indexName, searchString) {
   /*
 
   Pesquisa por um valor específico, apagando a primeira linha onde encontrar este valor
