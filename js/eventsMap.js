@@ -7,6 +7,11 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let marker, circle;
 
+/**
+ * Procura por uma localizacao usando um endereco e atualiza o mapa com a localizacao encontrada.
+ * @param {string} address - Endereco a ser pesquisado
+ *
+ */
 export async function searchAddress(address) {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
 
@@ -26,6 +31,12 @@ export async function searchAddress(address) {
     }
 }
 
+/**
+ * Atualiza a visualização do mapa com um novo local.
+ * @param {number} lat - Latitude do local.
+ * @param {number} lng - Longitude do local.
+ * @param {number|null} accuracy - Precisão da localização.
+ */
 function updateMap(lat, lng, accuracy = null) {
     if (marker) map.removeLayer(marker);
     if (circle) map.removeLayer(circle);
