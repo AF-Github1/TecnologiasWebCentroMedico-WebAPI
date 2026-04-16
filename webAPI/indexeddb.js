@@ -3,7 +3,7 @@ import { Formulario } from '../js/formClass.js'
 // Example reference https://github.com/mdn/dom-examples/blob/main/indexeddb-api/main.js
 
 const dbName = 'formDatabase';
-const dbVersion = 10; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
+const dbVersion = 11; // Necessário incrementar este valor caso realiza-se mudanças no código e a base de dados já esteja criada
 
 const request = indexedDB.open(dbName, dbVersion);
 
@@ -114,7 +114,6 @@ export function existsInIndex(storeName, indexName, searchString, callback) { //
         cursor.continue();
       } else {
         callback(results); //Se chegar ao fim das iterações, devolve o que foi obtido
-        //!! Informar utilizador aqui
       }
     };
   };
@@ -124,7 +123,16 @@ export function existsInIndex(storeName, indexName, searchString, callback) { //
 
 export function updateValue(storeName, indexName, searchString, newValue) {
 
-  /* Esta função atualiza o nome numa base de dados  */ //!! Necessário alterar para permitir utilizador escolher
+  /* 
+  
+  Esta função atualiza um valor antigo para um novo valor quando chamada, para uma determinada tabela, num determinado index
+
+  * @param {storeName} string - Define a tabela para a qual se está a buscar o index
+  * @param {indexName} string - Nome do index onde se deseja trocar o valor
+  * @param {searchString} string - Valor específico que se está a procurar no index para ser trocado
+  * @param {newValue} string - O novo valor que irá substituir o valor searchString encontrado no index
+  
+  */
   const request = indexedDB.open(dbName, dbVersion);
 
   request.onsuccess = (event) => {
@@ -158,8 +166,11 @@ export function updateValue(storeName, indexName, searchString, newValue) {
 export function removeRow(storeName, indexName, searchString) { // https://www.tutorialspoint.com/indexeddb/indexeddb_deleting_data.htm#:~:text=Syntax,database%20which%20are%20not%20required.
   /*
 
-  Pesquisa por um valor específico, apagando a primeira linha onde encontrar este valor (//!!apenas suposto utilizar isto para 
-  indices específicos com id, ou com um email ou telefone, devido a nomes poderem repetir-se, necessário criar excepção para nome)
+  Pesquisa por um valor específico, apagando a primeira linha onde encontrar este valor
+
+  * @param {storeName} string - Define a tabela para a qual se está a buscar o index
+  * @param {indexName} string - Nome do index onde se deseja verificar a existência da searchString
+  * @param {searchString} string - Valor específico que se está a procurar no index para identificar a linha a remover
 
   */
   
@@ -196,9 +207,9 @@ export function removeRow(storeName, indexName, searchString) { // https://www.t
 export function updateTableEvents(storeName = "Events") {
   /*
 
-  Esta função é responsável por manter a tabela que demonstra o que de momento está na base de dados atualizada da parte dos utilizadores que usaram o formulário para criação de
-  eventos, permitindo aos utilizador apagar ou editar o conteúdo da base de dados através desta tabela
+  Esta função é responsável por manter a tabela de eventos actualizada com os dados presentes na base de dados, permitindo ver, editar e remover registos
 
+  * @param {storeName} string - Tabela utilizada para mostrar todos os dados existentes no lado do site
   */
     const request = indexedDB.open(dbName, dbVersion);
 
@@ -215,7 +226,6 @@ export function updateTableEvents(storeName = "Events") {
             if (cursor) {
                 const eventData = cursor.value;
 
-                // Create row
                 const row = document.createElement('tr'); 
 
                 const titleCell = document.createElement('td'); 
@@ -238,10 +248,33 @@ export function updateTableEvents(storeName = "Events") {
                 const editBtn = document.createElement('button');
                 editBtn.textContent = 'Editar';
                 editBtn.className = 'btn-table-edit';
+
                 editBtn.onclick = () => {
-                    const newTitle = prompt('Novo título do evento:', eventData.title);
-                    if (newTitle) {
-                        window.updateValue(storeName, 'id', eventData.id, { title: newTitle });
+
+                    const fieldChoice = prompt(
+                        `Qual o valor que deseja editar em "${eventData.title}"? (Escolha um número de 1 a 5)\n` +
+                        `1: Titulo\n 2: Descrição\n 3: Data\n 4: Hora\n 5: Local`);
+
+                    if (!fieldChoice) return;
+
+                    let dbKey;
+                    let currentVal;
+
+                    switch (fieldChoice.toLowerCase()) {
+                        case '1': case 'titulo': dbKey = 'title'; currentVal = eventData.title; break;
+                        case '2': case 'descricao': dbKey = 'description'; currentVal = eventData.description; break;
+                        case '3': case 'data': dbKey = 'date'; currentVal = eventData.date; break;
+                        case '4': case 'hora': dbKey = 'time'; currentVal = eventData.time; break;
+                        case '5': case 'local': dbKey = 'localization'; currentVal = eventData.localization; break;
+                        default: alert("Opção inválida."); return;
+                    }
+
+                    const newValue = prompt(`Insira o novo valor para ${dbKey}:`, currentVal);
+                    
+                    if (newValue && newValue !== currentVal) {
+                        const updateData = {};
+                        updateData[dbKey] = newValue;
+                        window.updateValue(storeName, 'id', eventData.id, updateData);
                     }
                 };
 
@@ -260,7 +293,6 @@ export function updateTableEvents(storeName = "Events") {
         };
     };
 }
-// These allow the user to call the functions through button inputs
 window.updateValue = updateValue;
 window.removeRow = removeRow;
 window.existsInIndex = existsInIndex;

@@ -2,7 +2,7 @@ import { handleTransaction } from '../webAPI/indexeddb.js';
 
 export function checkEvent(event) {
     /*
-    Esta função verificada a validade dos dados inseridos em formulário, metendo-os na base de dados se válidos
+    Esta função verificada a validade dos dados inseridos em formulário, metendo-os na base de dados em caso de sucesso
     */
     event.preventDefault();
 

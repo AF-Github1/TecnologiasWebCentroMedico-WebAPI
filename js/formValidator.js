@@ -13,4 +13,3 @@ export function containsNumbers(text) {
     return patterns.numbers.test(text);
 }
 
-//!! Adicionar validação de eventos (titulo, descrição, data , hora , local)
