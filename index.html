@@ -9,17 +9,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/stylesheet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <script type="text/javascript" src="js/eventsMap.js" defer></script>
   <script type="text/javascript" src="js/events.js" defer></script>
   <script type="text/javascript" src="js/barchart.js" defer></script>
   <script type="module" src="js/form.js" defer></script>
   <script type="text/javascript" src="js/animation3js.js" defer></script>
   <script type="text/javascript" src="js/textToggle.js" defer></script>
 
+
   <script src="https://d3js.org/d3.v7.min.js" ></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.145.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.145.0/examples/js/loaders/GLTFLoader.js"></script>
+
+  <script type="module" src="webAPI/indexeddb.js"></script>
+  <script type="module" src="js/newsletter.js"></script>
+  <script type="module" src="js/eventForm.js"></script>
 
 </head>
 
@@ -32,12 +41,15 @@
       
       <input type="checkbox" id="menu-toggle" class="menu-toggle">
       
+      <div id="google_translate_element"></div>
+
       <label for="menu-toggle" class="hamburger">
         <div class="hamburger-line"></div>
         <div class="hamburger-line"></div>
         <div class="hamburger-line"></div>
       </label>
       
+
       <nav class="navbar">
         <a href="#apresentacao">Apresentação</a>
         <a href="#investigacao">Investigação</a>
@@ -45,6 +57,7 @@
         <a href="#oportunidades">Oportunidades</a>
         <a href="#contactos">Contactos</a>
       </nav>
+
     </header>
 
     <main>
@@ -107,6 +120,8 @@
             </div>
           </div>
 
+          
+
           <div class="grid-box-investigacao" onclick="textSwap(this)">
             <div class="conteudo-box">
             <h3 class="text-title">Telemedicina</h3>
@@ -144,6 +159,23 @@
         </div>
       </section>
 
+    <!--   Secção respectiva à newsletter   -->
+      <section id="newsletter" class="newsletter">
+      <div class="newsletter-container">
+        <div class="newsletter-text">
+            <h3>Deseja saber mais? Inscreva-se no nosso newsletter!</h3>
+        </div>
+        <div class="newsletter-inputs">
+            <form id="newsletter-form">
+                <input type="text" id="news-name" placeholder="Nome" required>
+                <input type="email" id="news-email" placeholder="E-mail" required>
+                <button type="submit">Subscrever</button>
+            </form>
+        </div>
+      </div>
+      </section>
+
+
       <hr class="linebreak">
 
       <section id="parceiros" class="parceiros" tabindex="0">
@@ -175,6 +207,10 @@
     </section>
 
 
+
+      <hr class="linebreak">
+
+      <rssapp-carousel id="DW6BivQRWvSugh7U"></rssapp-carousel><script src="https://widget.rss.app/v1/carousel.js" type="text/javascript" async></script></body>
 
       <hr class="linebreak">
 
@@ -233,7 +269,7 @@
         <h1>Contactos</h1>
         <div class="contactos-container">
           <div class="contacto-mapa">
-            <iframe src="https://www.google.com/maps?q=Universidade+dos+Açores+Ponta+Delgada&output=embed">
+              <iframe src="https://www.google.com/maps?q=Universidade+dos+Açores+Ponta+Delgada&output=embed">
             </iframe>
           </div>
           <div class="contacto-info">
@@ -270,7 +306,7 @@
                 </select>
                 <input id="phone-number" type="tel" placeholder="Telefone (opcional)">
               </div>
-              <select id="subject" onchange="fillMessage()">
+              <select id="subject">
                 <option value="">Assunto*</option>
                 <option value="Informações sobre oportunidades">Informações sobre oportunidades</option>
                 <option value="Candidatura a bolsa de investigação">Candidatura a bolsa de investigação</option>
@@ -280,11 +316,62 @@
               </select>
               <input id="subject-custom" placeholder="Especifique o assunto*" style="display:none;">
               <textarea id = "message" placeholder="Mensagem*"></textarea>
-              <button type="submit" onclick="checkForm();">Enviar</button>
+              <button type="submit">Enviar</button>
             </form>
           </div>
         </div>
       </section>
+      
+
+
+      <!--  Secção de Eventos, contendo o formulário para adicionar eventos e a tabela para o utilizador os conseguir visualizar e manipular-->
+      <hr class="linebreak">
+
+      <rssapp-carousel id="DW6BivQRWvSugh7U"></rssapp-carousel><script src="https://widget.rss.app/v1/carousel.js" type="text/javascript" async></script>
+      
+      <hr class="linebreak">
+      
+      <section id="eventos" class="eventos" tabindex="0">
+        <h1>Eventos</h1>
+        <div class="eventos-container">
+
+          <div class="event-form">
+            <h4>Introduza a informação do evento aqui:</h4>
+            <form id = "event-form">
+              <input id = "title" placeholder="Titulo*">
+              <input id = "description" placeholder="Descrição*">
+              <input id = "date" placeholder="Data*">
+              <input id = "time" placeholder="Hora*">
+              <input id = "localization" placeholder="Local*">
+              <button type="submit">Enviar</button>
+            </form>
+          </div>
+          <div id="map"></div>
+        </div>
+        </section>
+      
+      <!--   Secção respectiva à visualização de base de dados para formulário de eventos    -->
+      <section id="DB-display">
+      <h2>Lista de Eventos</h2>
+      <table id="DB-table">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Data/Hora</th>
+            <th>Local</th>
+            <th>Descrição</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="DB-list">
+          </tbody>
+      </table>
+      </section>
+
+
+
+
+
     </main>
 
     <footer>
@@ -309,6 +396,7 @@
   </div>
 
   <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
-  
+  <script type="text/javascript" src="js/translator.js"></script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

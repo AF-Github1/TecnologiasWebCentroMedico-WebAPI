@@ -1,6 +1,6 @@
 export class Formulario {
   /*
-   Esta classe representa o formulário de contacto e contém métodos para a validação dos dados inseridos no formulário
+   Esta classe representa o formulário de contacto e contém métodos para a validação dos dados inseridos no formulário.
 
    * @param {string} name - Nome do utilizador
    * @param {string} email - Endereço de email a validar
@@ -9,7 +9,7 @@ export class Formulario {
    * @param {string} message - Texto da mensagem
    * @param {string} phoneNumber - Número de telefone (opcional)
    */
-  constructor(name, email, selectSubject, customSubject, message, phoneNumber) {
+  constructor(name, email, selectSubject = null, customSubject= null, message = null, phoneNumber) {
     this.name = name
     this.email = email
     this.selectSubject = selectSubject
@@ -58,7 +58,7 @@ export class Formulario {
   isPhoneValid() {
     /*
     Utiliza-se regex para verificar se o telefone contém apenas dígitos e entre 6 a 15 caracteres
-    Sendo o numero de telefone opcional, a falta complete de um número de telefone é considerada válida  
+    Sendo o numero de telefone opcional, a falta completa de um número de telefone é considerada válida  
     */
     if (this.phoneNumber !== '') {
     const cleanNumber = this.phoneNumber.replace(/[\s\-().]/g, '')
@@ -80,4 +80,16 @@ export class Formulario {
       this.isPhoneValid()
     )
   }
+
+  get databaseInputObject() {
+    /*
+    Devolve o nome, email e telemóvel da instância actual, a efeitos de declarar esta informação para indexedDB, e devolve valores bool de false ou true, dependendo
+    se é esperado que seja um valor único em base de dados
+    */
+    return {
+      name: [this.name, false],
+      email: [this.email, true],
+      phone: [this.phoneNumber, true]
+    };
+}
 }

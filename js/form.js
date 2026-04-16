@@ -1,11 +1,14 @@
 import { Formulario } from './formClass.js'
+import {handleTransaction } from '/webAPI/indexeddb.js'
 
 export function fillMessage () {
  
  /*
+
  Preenche a mensagem e o assunto com texto pré-definido consoante a opção selecionada.
  Se o utilizador escolher "Outro assunto...", mostra o campo de texto livre para o assunto.
- A mensagem continua editável após ser preenchida automaticamente.
+ A mensagem continua editável após ser preenchida automaticamente
+
  */
  const predefinedMessages = {
  'Informações sobre oportunidades': 'Olá,\n\nGostaria de obter mais informações sobre as oportunidades disponíveis no Centro Académico Clínico dos Açores.\n\nCom cumprimentos,\n',
@@ -40,19 +43,24 @@ export function fillMessage () {
 
 
 
-export function checkForm () {
+export function checkForm (event) {
   /*
 
   Esta função informa o utilizador sobre o sucesso ou a falha na submissão do formulário, usando a classe Formulario e os métodos associados para validar a validade da informação
   inserida pelo utilizador.
+  Caso validada, a informação relevante do formulário é depois passada para a base de dados através de handleTransaction
 
   */
+  event.preventDefault()
+
   const formInformation = new Formulario(document.getElementById('name').value, document.getElementById('email').value,
                                         document.getElementById('subject').value, document.getElementById('subject-custom').value,
                                         document.getElementById('message').value, document.getElementById('phone-number').value)
-
+  
   if (formInformation.isValid()) {
     alert(`${formInformation.name}, o seu formulário foi enviado com sucesso`)
+    handleTransaction("ContactUser", formInformation.databaseInputObject);
+    event.target.reset();
   } else if (!formInformation.isPhoneValid()) {
     alert('Número de telefone inválido. Insira apenas dígitos (6 a 15 números).')
   } else {
@@ -69,7 +77,8 @@ const formElement = document.getElementById('contacto-form')
 
 subjectSelect.addEventListener('change', fillMessage)
 formElement.addEventListener('submit', (event) => {
-    checkForm()
+    checkForm(event)
   })
 
 })
+
