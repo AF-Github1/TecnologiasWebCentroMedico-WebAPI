@@ -7,10 +7,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let marker, circle;
 
-async function searchAddress() {
-    const address = document.getElementById('address').value;
-    if (!address) return alert("Please enter an address!");
-
+export async function searchAddress(address) {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
 
     try {

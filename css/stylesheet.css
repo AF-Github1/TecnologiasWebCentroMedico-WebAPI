@@ -7,6 +7,14 @@ body {
     max-width: 100%;
 }
 
+#map {
+    height: 400px; /* Essential: Leaflet needs a height */
+    width: 100%;
+    background-color: #ddd;
+    border-radius: 8px;
+    z-index: 1; /* Ensure it stays below headers but visible */
+}
+
 /* HEADER */
 header {
     font-family: 'Poppins', sans-serif;
@@ -475,7 +483,7 @@ th {
     font-size: 0.95rem;
 }
 
-.btn-table-edit, .btn-table-del {
+.btn-table-edit, .btn-table-del, .btn-table-viewMap{
     padding: 5px 10px;
     margin-right: 5px;
     border: none;
@@ -496,7 +504,10 @@ th {
     color: white;
 }
 
-
+.btn-table-viewMap {
+    background-color: #0f9d58;
+    color: white;
+}
 
 /* EVENTOS */
 .eventos {

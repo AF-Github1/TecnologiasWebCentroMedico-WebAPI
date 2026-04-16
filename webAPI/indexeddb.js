@@ -1,5 +1,5 @@
 import { Formulario } from '../js/formClass.js'
-
+import { searchAddress } from '../js/eventsMap.js';
 // Example reference https://github.com/mdn/dom-examples/blob/main/indexeddb-api/main.js
 
 const dbName = 'formDatabase';
@@ -283,8 +283,14 @@ export function updateTableEvents(storeName = "Events") {
                 delBtn.className = 'btn-table-del';
                 delBtn.onclick = () => window.removeRow(storeName, 'id', eventData.id);
 
+                const viewMapBtn = document.createElement('button');
+                viewMapBtn.textContent = 'Ver no mapa';
+                viewMapBtn.className = 'btn-table-viewMap';
+                viewMapBtn.onclick = () => searchAddress(eventData.localization);
+
                 actionsCell.appendChild(editBtn);
                 actionsCell.appendChild(delBtn);
+                actionsCell.appendChild(viewMapBtn);
                 row.appendChild(actionsCell);
 
                 tbody.appendChild(row);
