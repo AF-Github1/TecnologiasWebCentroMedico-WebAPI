@@ -113,7 +113,7 @@ export function existsInIndex(storeName, indexName, searchString, callback) { //
         results.push(cursor.value);
         cursor.continue();
       } else {
-        callback(results); //Se chegar ao fim das iterações, devolve o que foi obtido
+        callback(results); // Equivalente a return, devolve a linha inteira
       }
     };
   };
