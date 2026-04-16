@@ -9,11 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/stylesheet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script type="text/javascript" src="js/eventsMap.js" defer></script>
   <script type="text/javascript" src="js/events.js" defer></script>
   <script type="text/javascript" src="js/barchart.js" defer></script>
   <script type="module" src="js/form.js" defer></script>
   <script type="text/javascript" src="js/animation3js.js" defer></script>
   <script type="text/javascript" src="js/textToggle.js" defer></script>
+
 
   <script src="https://d3js.org/d3.v7.min.js" ></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -36,12 +40,15 @@
       
       <input type="checkbox" id="menu-toggle" class="menu-toggle">
       
+      <div id="google_translate_element"></div>
+
       <label for="menu-toggle" class="hamburger">
         <div class="hamburger-line"></div>
         <div class="hamburger-line"></div>
         <div class="hamburger-line"></div>
       </label>
       
+
       <nav class="navbar">
         <a href="#apresentacao">Apresentação</a>
         <a href="#investigacao">Investigação</a>
@@ -49,6 +56,7 @@
         <a href="#oportunidades">Oportunidades</a>
         <a href="#contactos">Contactos</a>
       </nav>
+
     </header>
 
     <main>
@@ -110,6 +118,8 @@
             <p><strong>Workshops realizadas:</strong> 68</p>
             </div>
           </div>
+
+          
 
           <div class="grid-box-investigacao" onclick="textSwap(this)">
             <div class="conteudo-box">
@@ -199,6 +209,10 @@
 
       <hr class="linebreak">
 
+      <rssapp-carousel id="DW6BivQRWvSugh7U"></rssapp-carousel><script src="https://widget.rss.app/v1/carousel.js" type="text/javascript" async></script></body>
+
+      <hr class="linebreak">
+
       <section id="oportunidades" class="oportunidades" tabindex="0">
         <h1>Oportunidades</h1>
         <div class="oportunidades-container">
@@ -254,7 +268,7 @@
         <h1>Contactos</h1>
         <div class="contactos-container">
           <div class="contacto-mapa">
-            <iframe src="https://www.google.com/maps?q=Universidade+dos+Açores+Ponta+Delgada&output=embed">
+              <iframe src="https://www.google.com/maps?q=Universidade+dos+Açores+Ponta+Delgada&output=embed">
             </iframe>
           </div>
           <div class="contacto-info">
@@ -376,6 +390,7 @@
   </div>
 
   <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
-  
+  <script type="text/javascript" src="js/translator.js"></script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
